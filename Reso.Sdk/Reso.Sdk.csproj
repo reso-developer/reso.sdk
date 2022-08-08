@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <PackageVersion>1.0.7</PackageVersion>
+        <Authors>QuangNT</Authors>
+        <Description></Description>
+        <PackageIcon>reso_logo.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Core" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="EPPlus" Version="6.0.6" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.17" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.17" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.17" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
+      <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.7" />
+      <PackageReference Include="Microsoft.OpenApi" Version="1.3.2" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.4" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.4.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
+      <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.19" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="reso_logo.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
+    </ItemGroup>
+
+</Project>

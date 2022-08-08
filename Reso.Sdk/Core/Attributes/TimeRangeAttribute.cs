@@ -1,0 +1,15 @@
+using System;
+
+namespace Reso.Sdk.Core.Attributes
+{
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field)]
+	public class TimeRangeAttribute : Attribute
+	{
+		public string Params { get; set; }
+
+		public TimeRangeAttribute(string parameters)
+		{
+			Params = parameters;
+		}
+	}
+}
