@@ -2,15 +2,11 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <PackageVersion>1.0.7</PackageVersion>
+        <PackageVersion>1.0.8</PackageVersion>
         <Authors>QuangNT</Authors>
         <Description></Description>
         <PackageIcon>reso_logo.png</PackageIcon>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Folder Include="Core" />
-    </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="EPPlus" Version="6.0.6" />
