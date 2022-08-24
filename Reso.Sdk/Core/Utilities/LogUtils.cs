@@ -30,7 +30,7 @@ namespace Reso.Sdk.Core.Utilities
                     {
                         store_id = storeId,
                         content = exception.ToString(),
-                        project_name = Assembly.GetExecutingAssembly().GetName().Name
+                        project_name = Assembly.GetEntryAssembly()?.GetName().Name
                     }, new JsonSerializerSettings
                     {
                         ContractResolver = new DefaultContractResolver
@@ -68,7 +68,7 @@ namespace Reso.Sdk.Core.Utilities
                     {
                         store_id = storeId,
                         content = exception.ToString(),
-                        projectName = Assembly.GetExecutingAssembly().GetName().Name
+                        projectName = Assembly.GetEntryAssembly()?.GetName().Name
                     }, new JsonSerializerSettings
                     {
                         ContractResolver = new DefaultContractResolver
