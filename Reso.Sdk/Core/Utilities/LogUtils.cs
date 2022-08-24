@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Reso.Sdk.Core.Middlewares;
 
 namespace Reso.Sdk.Core.Utilities
 {
@@ -48,7 +49,7 @@ namespace Reso.Sdk.Core.Utilities
                 //ignore
             }
         }
-
+        
         /// <summary>
         /// Send log to ResoLog with optional store id, default storeId=136
         /// </summary>

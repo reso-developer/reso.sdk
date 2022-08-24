@@ -1,44 +1,77 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace Reso.Sdk.Core.Middlewares
 {
+    /// <summary>
+    /// # Config log request and response middlewares <br/>
+    /// - Add "LogOrigins" into appsettings.json <br/>
+    /// - Add into Startup.cs
+    /// app.UseMiddleware&lt;RequestResponseMiddleware&gt;(); 
+    /// <example>
+    ///  With specific origin:
+    ///     <code>
+    ///          "LogOrigins":"origin1,origin2,..."
+    ///     </code>
+    /// With all origin:
+    ///     <code>
+    ///          "LogOrigins":"AllOrigins"
+    ///     </code>
+    /// </example>
+    /// </summary>
     public class RequestResponseMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly IConfiguration _configuration;
 
-        public RequestResponseMiddleware(RequestDelegate next)
+        public RequestResponseMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
+            _configuration = configuration;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            //First, get the incoming request
-            var request = await FormatRequest(context.Request);
+            var origin = context.Request.Headers["Origin"].ToString() == ""
+                ? "AllOrigins"
+                : context.Request.Headers["Origin"].ToString();
 
-            //Copy a pointer to the original response body stream
-            var originalBodyStream = context.Response.Body;
-
-            //Create a new memory stream...
-            using (var responseBody = new MemoryStream())
+            if (CheckLogOrigin(origin))
             {
-                //...and use that for the temporary response body
-                context.Response.Body = responseBody;
+                //First, get the incoming request
+                var request = await FormatRequest(context.Request);
 
-                //Continue down the Middleware pipeline, eventually returning to this class
+                //Copy a pointer to the original response body stream
+                var originalBodyStream = context.Response.Body;
+
+                //Create a new memory stream...
+                using (var responseBody = new MemoryStream())
+                {
+                    //...and use that for the temporary response body
+                    context.Response.Body = responseBody;
+
+                    //Continue down the Middleware pipeline, eventually returning to this class
+                    await _next(context);
+
+                    //Format the response from the server
+                    var response = await FormatResponse(context.Response);
+
+                    await Utilities.LogUtils.SendLog("Request: " + request + " | Response: " + response)
+                        .ConfigureAwait(false);
+
+                    //Copy the contents of the new memory stream (which contains the response) to the original stream, which is then returned to the client.
+                    await responseBody.CopyToAsync(originalBodyStream);
+                }
+            }
+            else
+            {
                 await _next(context);
-
-                //Format the response from the server
-                var response = await FormatResponse(context.Response);
-
-                await Utilities.LogUtils.SendLog("Request: " + request + " | Response: " + response).ConfigureAwait(false);
-
-                //Copy the contents of the new memory stream (which contains the response) to the original stream, which is then returned to the client.
-                await responseBody.CopyToAsync(originalBodyStream);
             }
         }
 
@@ -72,6 +105,21 @@ namespace Reso.Sdk.Core.Middlewares
 
             //Return the string for the response, including the status code (e.g. 200, 404, 401, etc.)
             return $"{response.StatusCode}: {text}";
+        }
+
+        private bool CheckLogOrigin(string origin)
+        {
+            var origins = _configuration.GetValue<string>("LogOrigins");
+            if (origins != string.Empty)
+            {
+                List<string> listOrigins = origins.Split(',').ToList();
+                if (listOrigins.Any(x => x.Equals(origin)) || listOrigins.Any(x => x.Equals("AllOrigins")))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
