@@ -11,17 +11,17 @@ namespace Reso.Sdk.Core.Middlewares
 {
     /// <summary>
     /// # Config log request and response middlewares <br/>
-    /// - Add "LogOrigins" into appsettings.json <br/>
+    /// - Add "LogMiddlewareOrigins" into appsettings.json <br/>
     /// - Add into Startup.cs
     /// app.UseMiddleware&lt;RequestResponseMiddleware&gt;(); 
     /// <example>
     ///  With specific origin:
     ///     <code>
-    ///          "LogOrigins":"origin1,origin2,..."
+    ///          "LogMiddlewareOrigins":"origin1,origin2,..."
     ///     </code>
     /// With all origin:
     ///     <code>
-    ///          "LogOrigins":"AllOrigins"
+    ///          "LogMiddlewareOrigins":"AllOrigins"
     ///     </code>
     /// </example>
     /// </summary>
@@ -61,8 +61,11 @@ namespace Reso.Sdk.Core.Middlewares
 
                     //Format the response from the server
                     var response = await FormatResponse(context.Response);
-
-                    await Utilities.LogUtils.SendLog("Request: " + request + " | Response: " + response)
+                    
+                    await Utilities.LogUtils.SendLog(136,
+                            "[RequestResponse] Origin: " + origin +
+                            "\n||  Request: " + request +
+                            "\n|| Response: " + response)
                         .ConfigureAwait(false);
 
                     //Copy the contents of the new memory stream (which contains the response) to the original stream, which is then returned to the client.
@@ -109,7 +112,7 @@ namespace Reso.Sdk.Core.Middlewares
 
         private bool CheckLogOrigin(string origin)
         {
-            var origins = _configuration.GetValue<string>("LogOrigins");
+            var origins = _configuration.GetValue<string>("LogMiddlewareOrigins");
             if (origins != string.Empty)
             {
                 List<string> listOrigins = origins.Split(',').ToList();
